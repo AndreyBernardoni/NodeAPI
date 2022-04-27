@@ -1,12 +1,23 @@
-// Definindo o Express e o BCrypt
+// Definindo o Express, BCrypt e JWT 
 const express = require('express');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
+// Importando o AuthConfig
+const authConfig = require('../config/auth');
 
 // Definindo o User
 const User = require('../models/User');
 
 // Definindo o Router
 const router = express.Router();
+
+// Função para gerar o token
+function generateToken(params = {}) {
+    return jwt.sign(params, authConfig.secret, {
+        expiresIn: 86400,
+    });
+}
 
 // Metodo de Post da API
 router.post('/register', async(req, res) => {
@@ -20,7 +31,10 @@ router.post('/register', async(req, res) => {
         // Tornando a password undefined
         user.password = undefined;
         // Retornando o usuário
-        return res.send({ user });
+        return res.send({
+            user,
+            token: generateToken({ id: user.id }),
+        });
         // Tratamento de Erro
     } catch (err) {
         return res.status(400).send({ error: 'Registration failed' });
@@ -44,8 +58,12 @@ router.post('/authenticate', async(req, res) => {
     }
     // Removendo a senha do usuario
     user.password = undefined;
+
     // Retornando o usuario
-    res.send({ user });
+    res.send({
+        user,
+        token: generateToken({ id: user.id }),
+    });
 });
 
 // Toda vez que for acessado o /auth, será chamado o router

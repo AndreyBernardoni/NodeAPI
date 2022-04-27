@@ -7,15 +7,12 @@ app.use(express.json());
 // Decoder para o Body Parser
 app.use(express.urlencoded({ extended: false }));
 
-// Iniciando o servidor
-app.listen(3000, () => {
-    console.log('Server is running on port 3000');
-});
+
 
 // Definindo o o authController no app
 require('./controller/authController')(app);
+// Definindo o o projectController no app
+require('./controller/projectController')(app);
 
-// Recebendo a requisição
-app.get('/', (req, res) => {
-    res.send('Hello World!');
-});
+// Iniciando o servidor
+app.listen(3000);
