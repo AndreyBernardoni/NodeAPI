@@ -1,5 +1,5 @@
 // Denifindo o Mongoose
-const mongoose = require('../database');
+const mongoose = require('../../database');
 // Definindo o Bcrypt
 const bcrypt = require('bcryptjs');
 

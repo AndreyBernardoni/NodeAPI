@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 // Importando o AuthConfig
-const authConfig = require('../config/auth');
+const authConfig = require('../../config/auth');
 
 // Definindo o User
 const User = require('../models/User');

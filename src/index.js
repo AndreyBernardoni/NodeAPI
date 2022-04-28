@@ -7,12 +7,8 @@ app.use(express.json());
 // Decoder para o Body Parser
 app.use(express.urlencoded({ extended: false }));
 
-
-
-// Definindo o o authController no app
-require('./controller/authController')(app);
-// Definindo o o projectController no app
-require('./controller/projectController')(app);
+// Definindo os Controllers no app
+require('./controller/index')(app);
 
 // Iniciando o servidor
 app.listen(3000);
