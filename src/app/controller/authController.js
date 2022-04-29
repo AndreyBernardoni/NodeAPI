@@ -1,7 +1,8 @@
-// Definindo o Express, BCrypt e JWT 
+// Definindo o Express, crypto, BCrypt e JWT 
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 
 // Importando o AuthConfig
 const authConfig = require('../../config/auth');
@@ -64,6 +65,36 @@ router.post('/authenticate', async(req, res) => {
         user,
         token: generateToken({ id: user.id }),
     });
+});
+
+// Rota de forgotPassword
+router.post('/forgot_password', async(req, res) => {
+    // Recebendo o email
+    const { email } = req.body;
+    // Verificando se o email existe
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(400).send({ error: 'User not found' });
+        }
+        // Gerando o token
+        const token = crypto.randomBytes(20).toString('hex');
+
+        // Definindo o tempo de expiração
+        const now = new Date();
+        now.setHours(now.getHours() + 1);
+
+        // Salvando o token no usuario
+        await User.findByIdAndUpdate(user.id, {
+            '$set': {
+                passwordResetToken: token,
+                passwordResetExpires: now,
+            },
+        });
+        console.log(token, now);
+    } catch (err) {
+        return res.status(400).send({ error: 'Error on forgot password' });
+    }
 });
 
 // Toda vez que for acessado o /auth, será chamado o router
